@@ -6,6 +6,7 @@ var Hotel = db.model('hotel');
 var Restaurant = db.model('restaurant');
 var Activity = db.model('activity');
 var Place = db.model('place');
+var Day = db.model('day');
 
 router.get('/', function(req, res, next) {
 	Promise.all([
@@ -18,10 +19,10 @@ router.get('/', function(req, res, next) {
 			hotels: hotels,
 			restaurants: restaurants,
 			activities: activities
-		})
+		});
 	})
-	.catch(next)
-})
+	.catch(next);
+});
 
 // Example:
 //
@@ -45,7 +46,7 @@ router.get('/api', (req, res, next) =>
 	})
 		.then(data => res.json(data))
 		.catch(next)
-)
+);
 
 // Use Fetch (built in browser API):
 //
@@ -54,12 +55,30 @@ router.get('/api', (req, res, next) =>
 // Use jQuery's $.post:
 //
 //   $.post('/api/echo', {hello: 'world'}).then(doSomethingWithIt)
-router.post('/api/echo', (req, res) => res.json(req.body))
+// router.post('/api/echo', (req, res) => res.json(req.body));
 
-router.post('/api/hotels',
-	(req, res, next) =>
-		Hotel.create(req.body)
-			.then(hotel => res.json(hotel))
-			.catch(next))
+// router.post('/api/hotels',
+// 	(req, res, next) =>
+// 		Hotel.create(req.body)
+// 			.then(hotel => res.json(hotel))
+// 			.catch(next));
+
+router.post('/api/days/create', function(req, res, next){
+	Day.create({
+		number: 1
+	})
+	.then(function(day){
+		res.send(day);
+	});
+});
+
+router.post('/api/days/switch', function(req, res, next){
+	Day.findOne({
+		where: {number: 1}
+	})
+	.then(function(day){
+		res.send(day);
+	});
+});
 
 module.exports = router;
