@@ -72,13 +72,52 @@ router.post('/api/days/create', function(req, res, next){
 	});
 });
 
-router.post('/api/days/switch', function(req, res, next){
-	Day.findOne({
-		where: {number: 1}
-	})
+router.get('/api/days/:id', function(req, res, next){
+	Day.findById(req.params.id)
 	.then(function(day){
 		res.send(day);
 	});
 });
+
+router.delete('/api/days/:id', function(req, res, next){
+	Day.findById(req.params.id)
+	.then(function(day){
+		return day.destroy();
+	})
+	.then(function(){
+		res.send('deleted')
+	})
+})
+
+router.get('/api/days/all', function(req, res, next){
+	Day.findAll({})
+	.then(function(days){
+		res.send(days)
+	})
+})
+
+router.post('/api/days/:id/restaurants', function(req, res, next){
+
+})
+
+router.post('/api/days/:id/hotels', function(req, res, next){
+
+})
+
+router.post('/api/days/:id/activities', function(req, res, next){
+
+})
+
+router.delete('/api/days/:id/restaurants', function(req, res, next){
+
+})
+
+router.delete('/api/days/:id/hotels', function(req, res, next){
+
+})
+
+router.delete('/api/days/:id/activities', function(req, res, next){
+
+})
 
 module.exports = router;
