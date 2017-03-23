@@ -127,19 +127,19 @@ $(function initializeMap () {
   );
 
   // 4. Deal with adding days
-  $('button.addDay').click(
-    evt => {
-      // Deselect all days
-      $('.day.current').removeClass('current');
+  // $('button.addDay').click(
+  //   evt => {
+  //     // Deselect all days
+  //     $('.day.current').removeClass('current');
 
-      // Add a new day
-      $(evt.target).before(
-        $(`<ol class="current day"><h3><span class=day-head></span><button class=delDay>x</button></h3></ol>`)
-      );
+  //     // Add a new day
+  //     $(evt.target).before(
+  //       $(`<ol class="current day"><h3><span class=day-head></span><button class=delDay>x</button></h3></ol>`)
+  //     );
 
-      numberDays();
-    }
-  );
+  //     numberDays();
+  //   }
+  // );
 
   function numberDays() {
     $('.day').each((index, day) =>
@@ -179,12 +179,6 @@ $(function initializeMap () {
   // $('button.addDay').click();
 
   // Route for showing all days
-  // const days = fetch('/api/days/all')
-  // .then(function(data){
-  //   return data.json();
-  // });
-
-  // $('#days').append(days);
 
   $.get('/api/days/all')
   .then(function(days){
@@ -193,12 +187,21 @@ $(function initializeMap () {
       if(idx){
         return $('<ol><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
       }else{
-        return $('<ol class=current day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+        return $('<ol class=current-day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
       }
     })
     );
   });
 
+  //add day button
+  $('button.addDay').on('click', function(){
+    $.post('/api/days/add')
+    .then(function(day){
+      $('.current-day').removeClass('current-day');
+      $('#days').append(
+        $('<ol class=current-day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>')
+      );
+    })
+})
+})
 
-
-});

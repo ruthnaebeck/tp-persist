@@ -63,9 +63,12 @@ router.get('/api', (req, res, next) =>
 // 			.then(hotel => res.json(hotel))
 // 			.catch(next));
 
-router.post('/api/days/:id', function(req, res, next){
-	Day.create({
-		number: req.params.id
+router.post('/api/days/add', function(req, res, next){
+	Day.count()
+	.then(function(count){
+		return Day.create({
+		number: count + 1
+	}, {returning: true})
 	})
 	.then(function(day){
 		res.send(day);
