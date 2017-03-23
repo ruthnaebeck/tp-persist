@@ -83,7 +83,7 @@ $(function initializeMap () {
         $(select).append(
           db[select.dataset.type].map (
             item => Object.assign(
-              $(`<option>${item.name}</option>`)[0]
+              $(`<option id=${item.id}>${item.name}</option>`)[0]
               , {
                 item: item,
               })
@@ -97,26 +97,26 @@ $(function initializeMap () {
   // dataset item instead:
   //
   //   $('button[data-action="add"]').click(
-  $('button.add').click(
-    evt =>
-      $(evt.target.dataset.from)
-        .find('option:selected')
-        .each((_i, option) => {
-          const item = option.item
-              , type = $(option)
-                  .closest('select')[0]
-                  .dataset.type;
+  // $('button.add').click(
+  //   evt =>
+  //     $(evt.target.dataset.from)
+  //       .find('option:selected')
+  //       .each((_i, option) => {
+  //         const item = option.item
+  //             , type = $(option)
+  //                 .closest('select')[0]
+  //                 .dataset.type;
 
-          // Make a li out of this item
-          const li = $(`<li>${item.name} <button class='del'>x</button></li>`)[0];
+  //         // Make a li out of this item
+  //         const li = $(`<li>${item.name} <button class='del'>x</button></li>`)[0];
 
-          // Draw a marker on the map and attach the marker to the li
-          li.marker = drawMarker(type, item.place.location);
+  //         // Draw a marker on the map and attach the marker to the li
+  //         li.marker = drawMarker(type, item.place.location);
 
-          // Add this item to our itinerary for the current day
-          $('.current.day').append(li);
-        })
-  );
+  //         // Add this item to our itinerary for the current day
+  //         $('.current.day').append(li);
+  //       })
+  // );
 
   // 3. Wire up delete buttons
   $(document).on('click', 'button.del',
@@ -126,20 +126,6 @@ $(function initializeMap () {
     })
   );
 
-  // 4. Deal with adding days
-  // $('button.addDay').click(
-  //   evt => {
-  //     // Deselect all days
-  //     $('.day.current').removeClass('current');
-
-  //     // Add a new day
-  //     $(evt.target).before(
-  //       $(`<ol class="current day"><h3><span class=day-head></span><button class=delDay>x</button></h3></ol>`)
-  //     );
-
-  //     numberDays();
-  //   }
-  // );
 
   function numberDays() {
     $('.day').each((index, day) =>
@@ -159,21 +145,7 @@ $(function initializeMap () {
     }
   );
 
-  // 6. Remove a day
-  // $(document).on('click', 'button.delDay',
-  //   evt => {
-  //     const $day = $(evt.target).closest('.day');
-  //     if ($day.hasClass('current')) {
-  //       const prev = $day.prev('.day')[0]
-  //           , next = $day.next('.day')[0];
-  //       $day.removeClass('current');
-  //       $(prev || next).addClass('current');
-  //     }
 
-  //     $day.find('li').each((_i, li) => li.marker.setMap(currentMap));
-  //     $day.remove();
-  //     numberDays();
-  //   });
 
   // When we start, add a day
   // $('button.addDay').click();
@@ -186,7 +158,7 @@ $(function initializeMap () {
       if(idx){
         return $('<ol class=day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
       }else{
-        return $('<ol class="day current"><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+        return $(`<ol class="day current"><h3><span class=day-head id=` + day.id + `>Day ` + day.number + `</span><button class=delDay>x</button></h3><li>${day.hotel.name}<button class='del'>x</button></li></ol>`);
       }
     })
     );
@@ -212,6 +184,41 @@ $(function initializeMap () {
       console.log('deleted');
     });
   });
+
+  $('button[data-action="add-hotel"]').on('click', function(){
+    var hotelId = $('#hotels').find('option:selected')
+    .attr('id');
+    var dayId = $('.day.current span').attr('id');
+    var hotelName = $('#hotels').find('option:selected')
+    .text();
+    console.log(hotelName);
+    $.post(`/api/days/${dayId}/hotels/${hotelId}`)
+    .then(function(){
+      $('.day.current').append($(`<li>${hotelName} <button class='del'>x</button></li>`));
+    })
+  })
+
+    //   $('button[data-action="add"]').click(
+  // $('button.add').click(
+  //   evt =>
+  //     $(evt.target.dataset.from)
+  //       .find('option:selected')
+  //       .each((_i, option) => {
+  //         const item = option.item
+  //             , type = $(option)
+  //                 .closest('select')[0]
+  //                 .dataset.type;
+
+  //         // Make a li out of this item
+  //         const li = $(`<li>${item.name} <button class='del'>x</button></li>`)[0];
+
+  //         // Draw a marker on the map and attach the marker to the li
+  //         li.marker = drawMarker(type, item.place.location);
+
+  //         // Add this item to our itinerary for the current day
+  //         $('.current.day').append(li);
+  //       })
+  // );
 
 
 // end of document.ready

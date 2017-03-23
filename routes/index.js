@@ -76,10 +76,10 @@ router.post('/api/days/add', function(req, res, next){
 });
 
 router.get('/api/days/all', function(req, res, next){
-	Day.findAll({})
+	Day.findAll({include: [Hotel]})
 	.then(function(days){
 		res.send(days);
-	});
+	})
 });
 
 router.get('/api/days/:id', function(req, res, next){
@@ -103,8 +103,16 @@ router.post('/api/days/:id/restaurants', function(req, res, next){
 
 });
 
-router.post('/api/days/:id/hotels', function(req, res, next){
-
+router.post('/api/days/:dayid/hotels/:hotelid', function(req, res, next){
+	Day.findById(req.params.dayid)
+	.then(function(day){
+		return day.update({
+			hotelId: req.params.hotelid
+		})
+	})
+	.then(function(updatedday){
+		res.send(updatedday);
+	})
 });
 
 router.post('/api/days/:id/activities', function(req, res, next){
