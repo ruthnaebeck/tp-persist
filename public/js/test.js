@@ -8,6 +8,8 @@
 
 // $.ajax('/api/days/4', {method: 'delete'}).then(function(){console.log('deleted')})
 
-// $.get('/api/days/4').then(function(days){console.log(days)})
+// $.get('/api/days/1').then(function(days){console.log(days)})
 
 // $.get('/api/days/all').then(function(days){console.log(days)})
+
+// $.ajax('/api/days/2', {method: 'post'}).then(function(){console.log('day created')})

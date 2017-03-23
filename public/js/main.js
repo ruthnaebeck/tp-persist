@@ -176,5 +176,29 @@ $(function initializeMap () {
     });
 
   // When we start, add a day
-  $('button.addDay').click();
+  // $('button.addDay').click();
+
+  // Route for showing all days
+  // const days = fetch('/api/days/all')
+  // .then(function(data){
+  //   return data.json();
+  // });
+
+  // $('#days').append(days);
+
+  $.get('/api/days/all')
+  .then(function(days){
+    console.log(days[0].id);
+    $('#days').append(days.map(function(day, idx){
+      if(idx){
+        return $('<ol><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+      }else{
+        return $('<ol class=current day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+      }
+    })
+    );
+  });
+
+
+
 });

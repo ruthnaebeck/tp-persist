@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
 		Restaurant.findAll({ include: [Place] }),
 		Activity.findAll({ include: [Place] })
 	])
-	.spread(function(hotels, restaurants, activities) {
+	.spread(function(hotels, restaurants, activities, days) {
 		res.render('index', {
 			hotels: hotels,
 			restaurants: restaurants,
@@ -63,12 +63,19 @@ router.get('/api', (req, res, next) =>
 // 			.then(hotel => res.json(hotel))
 // 			.catch(next));
 
-router.post('/api/days/create', function(req, res, next){
+router.post('/api/days/:id', function(req, res, next){
 	Day.create({
-		number: 1
+		number: req.params.id
 	})
 	.then(function(day){
 		res.send(day);
+	});
+});
+
+router.get('/api/days/all', function(req, res, next){
+	Day.findAll({})
+	.then(function(days){
+		res.send(days);
 	});
 });
 
@@ -85,39 +92,32 @@ router.delete('/api/days/:id', function(req, res, next){
 		return day.destroy();
 	})
 	.then(function(){
-		res.send('deleted')
-	})
-})
-
-router.get('/api/days/all', function(req, res, next){
-	Day.findAll({})
-	.then(function(days){
-		res.send(days)
-	})
-})
+		res.send('deleted');
+	});
+});
 
 router.post('/api/days/:id/restaurants', function(req, res, next){
 
-})
+});
 
 router.post('/api/days/:id/hotels', function(req, res, next){
 
-})
+});
 
 router.post('/api/days/:id/activities', function(req, res, next){
 
-})
+});
 
 router.delete('/api/days/:id/restaurants', function(req, res, next){
 
-})
+});
 
 router.delete('/api/days/:id/hotels', function(req, res, next){
 
-})
+});
 
 router.delete('/api/days/:id/activities', function(req, res, next){
 
-})
+});
 
 module.exports = router;
