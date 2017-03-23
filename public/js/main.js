@@ -160,20 +160,20 @@ $(function initializeMap () {
   );
 
   // 6. Remove a day
-  $(document).on('click', 'button.delDay',
-    evt => {
-      const $day = $(evt.target).closest('.day');
-      if ($day.hasClass('current')) {
-        const prev = $day.prev('.day')[0]
-            , next = $day.next('.day')[0];
-        $day.removeClass('current');
-        $(prev || next).addClass('current');
-      }
+  // $(document).on('click', 'button.delDay',
+  //   evt => {
+  //     const $day = $(evt.target).closest('.day');
+  //     if ($day.hasClass('current')) {
+  //       const prev = $day.prev('.day')[0]
+  //           , next = $day.next('.day')[0];
+  //       $day.removeClass('current');
+  //       $(prev || next).addClass('current');
+  //     }
 
-      $day.find('li').each((_i, li) => li.marker.setMap(currentMap));
-      $day.remove();
-      numberDays();
-    });
+  //     $day.find('li').each((_i, li) => li.marker.setMap(currentMap));
+  //     $day.remove();
+  //     numberDays();
+  //   });
 
   // When we start, add a day
   // $('button.addDay').click();
@@ -182,12 +182,11 @@ $(function initializeMap () {
 
   $.get('/api/days/all')
   .then(function(days){
-    console.log(days[0].id);
     $('#days').append(days.map(function(day, idx){
       if(idx){
-        return $('<ol><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+        return $('<ol class=day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
       }else{
-        return $('<ol class=current-day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
+        return $('<ol class="day current"><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>');
       }
     })
     );
@@ -197,11 +196,24 @@ $(function initializeMap () {
   $('button.addDay').on('click', function(){
     $.post('/api/days/add')
     .then(function(day){
-      $('.current-day').removeClass('current-day');
+      $('.day.current').removeClass('current');
       $('#days').append(
-        $('<ol class=current-day><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>')
+        $('<ol class="day current"><h3><span class=day-head id=' + day.id + '>Day ' + day.number + '</span><button class=delDay>x</button></h3></ol>')
       );
-    })
-})
-})
+    });
+  });
+
+  // Delete day button
+  $(document).on('click', 'button.delDay', function(){
+    var id = $(this).closest('.day').children().children('span').attr('id');
+    $(this).closest('.day').remove();
+    $.ajax('/api/days/' + id, {method: 'delete'})
+    .then(function(){
+      console.log('deleted');
+    });
+  });
+
+
+// end of document.ready
+});
 
